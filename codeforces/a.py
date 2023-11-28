@@ -1,0 +1,1 @@
+print([a for a in reversed(range(1,20000))])
