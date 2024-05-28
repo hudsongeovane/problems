@@ -53,59 +53,29 @@ double eps = 1e-12;
 #define sz(x) ((ll)(x).size())
  
 
-pair<bool, vp64> solvewith(multiset<ll> & numbers, ll sum, vp64 & ans) {
-    if (numbers.empty()) return mp(true, ans);
-    auto mmax = numbers.end();
-    mmax--;
-    ll vmmax = *mmax;
-
-
-    if (numbers.find(sum - vmmax) == numbers.end()) return mp(false, ans);
-    else {
-        ll fill = sum-vmmax;
-        numbers.erase(mmax);
-        auto removealso = numbers.find(sum-vmmax);
-        ll toremove = *removealso;
-        if (removealso == numbers.end()) return mp(false, ans);
-        numbers.erase(removealso);
-        ans.pb(mp(vmmax, toremove));
-        return solvewith(numbers, vmmax, ans);
-    }
-}
-void solve(){
-    int n;
-    cin >> n;
-    multiset<ll> numbers;
-    forn(i, 2*n) {
-        ll v;
-        cin >> v;
-        numbers.insert(v);
-    }
-    auto last = numbers.end();
-    last--;
-    for(auto it = numbers.begin(); it != numbers.end(); it++) {
-        vp64 v;
-        multiset<ll> cp = numbers;
-        auto solved = solvewith(cp, *last + *it, v);
-        if (solved.first) {
-            cout << "YES" << endl;
-            cout << *last + *it << endl;
-            for(auto itt = solved.second.begin(); itt != solved.second.end(); itt++) {
-                cout << itt->fi << " " << itt->se << endl;
-            }
-            return;
-        }
-        if (next(it) == prev(numbers.end())) break;
-    }
-    cout << "NO" << endl;
-}
 int main()
 {
- fast_cin();
- ll t;
- cin >> t; 
- for(int it=1;it<=t;it++) {
-     solve();
- }
- return 0;
+    fast_cin();
+    ll n;
+    cin >> n;
+    vector< vector<int> > mm(200005, vector<int>());
+    forn(i, n) {
+        ll a;
+        cin >> a;
+        mm[a].pb(i+1);
+    }
+    ll q;
+    cin >> q;
+    forn(i, q) {
+        ll l,r,x;
+        cin >> l >> r >> x;
+        if (mm[x].empty()) {
+            cout << 0 << endl;
+            continue;
+        }
+        v32 &ocurrences = mm[x];
+        auto a = lower_bound(ocurrences.begin(), ocurrences.end(), l);
+        auto b = upper_bound(ocurrences.begin(), ocurrences.end(), r);
+        cout << (b - ocurrences.begin()) - (a - ocurrences.begin()) << endl;
+    }
 }

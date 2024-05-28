@@ -53,59 +53,52 @@ double eps = 1e-12;
 #define sz(x) ((ll)(x).size())
  
 
-pair<bool, vp64> solvewith(multiset<ll> & numbers, ll sum, vp64 & ans) {
-    if (numbers.empty()) return mp(true, ans);
-    auto mmax = numbers.end();
-    mmax--;
-    ll vmmax = *mmax;
-
-
-    if (numbers.find(sum - vmmax) == numbers.end()) return mp(false, ans);
-    else {
-        ll fill = sum-vmmax;
-        numbers.erase(mmax);
-        auto removealso = numbers.find(sum-vmmax);
-        ll toremove = *removealso;
-        if (removealso == numbers.end()) return mp(false, ans);
-        numbers.erase(removealso);
-        ans.pb(mp(vmmax, toremove));
-        return solvewith(numbers, vmmax, ans);
+ll calc(ll k, ll messages) {
+    if (messages <= k) {
+        return (1+messages) * messages / 2;
     }
+    return ((1+k)*k / 2) + (((k-1)+(k-(messages-k))) * (messages-k) / 2);
 }
 void solve(){
-    int n;
-    cin >> n;
-    multiset<ll> numbers;
-    forn(i, 2*n) {
-        ll v;
-        cin >> v;
-        numbers.insert(v);
+    ll k, x;
+    cin >> k >> x;
+    ll start = 2;
+    ll end = 2*k-1;
+    if (x == 1) {
+        cout << 1 << endl;
+        return;
     }
-    auto last = numbers.end();
-    last--;
-    for(auto it = numbers.begin(); it != numbers.end(); it++) {
-        vp64 v;
-        multiset<ll> cp = numbers;
-        auto solved = solvewith(cp, *last + *it, v);
-        if (solved.first) {
-            cout << "YES" << endl;
-            cout << *last + *it << endl;
-            for(auto itt = solved.second.begin(); itt != solved.second.end(); itt++) {
-                cout << itt->fi << " " << itt->se << endl;
-            }
+    if (x > calc(k, 2*k -1)) {
+        cout << 2*k - 1 << endl;
+    }
+    while (start < end) {
+        //cout << start << " " << end << endl;
+        if (calc(k, start) >= x && calc(k, start-1) < x) {
+            //cout << "--1 " << calc(k,start) << " " << calc(k,start-1) << endl;
+            cout << start << endl;  
             return;
         }
-        if (next(it) == prev(numbers.end())) break;
+        if (calc(k, end) >= x && calc(k, end-1) < x) {
+            //cout << "--2 " << calc(k,end) << endl;
+            cout << end << endl;
+            return;
+        }
+        ll mid = (start + end)/2;
+        if (calc(k, mid) >= x) {
+            end = mid;
+        }
+        else {
+            start = mid+1;
+        }
     }
-    cout << "NO" << endl;
 }
 int main()
 {
  fast_cin();
  ll t;
- cin >> t; 
+ cin >> t;
  for(int it=1;it<=t;it++) {
-     solve();
+    solve();
  }
  return 0;
 }

@@ -53,59 +53,36 @@ double eps = 1e-12;
 #define sz(x) ((ll)(x).size())
  
 
-pair<bool, vp64> solvewith(multiset<ll> & numbers, ll sum, vp64 & ans) {
-    if (numbers.empty()) return mp(true, ans);
-    auto mmax = numbers.end();
-    mmax--;
-    ll vmmax = *mmax;
-
-
-    if (numbers.find(sum - vmmax) == numbers.end()) return mp(false, ans);
-    else {
-        ll fill = sum-vmmax;
-        numbers.erase(mmax);
-        auto removealso = numbers.find(sum-vmmax);
-        ll toremove = *removealso;
-        if (removealso == numbers.end()) return mp(false, ans);
-        numbers.erase(removealso);
-        ans.pb(mp(vmmax, toremove));
-        return solvewith(numbers, vmmax, ans);
-    }
-}
-void solve(){
-    int n;
-    cin >> n;
-    multiset<ll> numbers;
-    forn(i, 2*n) {
-        ll v;
-        cin >> v;
-        numbers.insert(v);
-    }
-    auto last = numbers.end();
-    last--;
-    for(auto it = numbers.begin(); it != numbers.end(); it++) {
-        vp64 v;
-        multiset<ll> cp = numbers;
-        auto solved = solvewith(cp, *last + *it, v);
-        if (solved.first) {
-            cout << "YES" << endl;
-            cout << *last + *it << endl;
-            for(auto itt = solved.second.begin(); itt != solved.second.end(); itt++) {
-                cout << itt->fi << " " << itt->se << endl;
-            }
-            return;
+ll howmanyless(ll k, ll number) {
+    ll ans = 0;
+    forn(i, k) {
+        ll line = i+1;
+        if (line * k <= number) ans += k;
+        else {
+            ans += number/line;
         }
-        if (next(it) == prev(numbers.end())) break;
     }
-    cout << "NO" << endl;
+    return ans;
 }
 int main()
 {
- fast_cin();
- ll t;
- cin >> t; 
- for(int it=1;it<=t;it++) {
-     solve();
- }
- return 0;
+    fast_cin();
+    ll n;
+    cin >> n;
+    ll l=0, r=n*n;
+
+    ll search = 1+ ((n*n) /2);
+    ll ans = r;
+    while (l <= r) {
+        ll mid = (l+r) / 2;
+        if (howmanyless(n, mid) >= search) {
+            ans = mid;
+            r = mid-1;
+        }
+        else
+            l = mid+1;
+    }
+    cout << ans << endl;
 }
+
+ 
