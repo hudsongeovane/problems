@@ -51,49 +51,45 @@ double eps = 1e-12;
 #define all(x) (x).begin(), (x).end()
 #define rall(x) (x).rbegin(), (x).rend()
 #define sz(x) ((ll)(x).size())
- 
+#define print(x) cout << x << endl
 
 void solve(){
     ll n, m;
     cin >> n >> m;
-    vv64 a(n, v64(m));
-    vv64 b(n, v64(m));
-    set< set<ll> > rowsa, colsa, rowsb, colsb;
-    map<ll, p64> mm, mmb;
-
+    ll a[n][m];
+    ll b[n][m];
+    map<ll, p64> mm;
+ 
     forn(i, n) {
         forn(j, m) {
             cin >> a[i][j];
+            mm[a[i][j]] = mp(i,j);
         }
-        set<ll> q;
-        q.insert(all(a[i]));
-        rowsa.insert(q);
     }
     forn(i, n) {
         forn(j, m) {
             cin >> b[i][j];
         }
-        set<ll> q;
-        q.insert(all(b[i]));
-        rowsb.insert(q);
+    }
+    forn(i, n) {
+        ll rowi = mm[b[i][0]].fi;
+        forn(j, m) {
+            if (mm[b[i][j]].fi != rowi) {
+                print("NO");
+                return;
+            }
+        }
     }
     forn(j, m) {
-        v64 xa(m), xb(m);
+        ll coli = mm[b[0][j]].se;
         forn(i, n) {
-            xa.push_back(a[i][j]);
-            xb.push_back(b[i][j]);
+            if (mm[b[i][j]].se != coli) {
+                print("NO");
+                return;
+            }
         }
-        set<ll> q, r;
-        q.insert(all(xa));
-        r.insert(all(xb));
-        colsa.insert(q);
-        colsb.insert(r);
     }
-    if (rowsa != rowsb || colsa != colsb) {
-        cout << "NO" << endl;
-        return;
-    }
-    cout << "YES" << endl;
+    print("YES");
 }
 int main()
 {
